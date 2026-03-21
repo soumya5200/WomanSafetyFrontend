@@ -16,7 +16,7 @@ const Dashboard = () => {
       }
 
       const { data } = await axios.get(
-        "http://localhost:5000/api/v1/incidents", // ✅ FIX 2 (http)
+        "https://womansafetybackend.onrender.com/api/v1/incidents", // ✅ FIX 2 (http)
         {
           headers: {
             Authorization: `Bearer ${token}`, // ✅ FIX 3

@@ -64,7 +64,7 @@ const Register = () => {
             return false;
         }
         try {
-            const res = await axios.post('http://localhost:5000/api/v1/users/register',
+            const res = await axios.post('https://womansafetybackend.onrender.com/api/v1/users/register',
                 { uname, email, phone, password, emergencyNo, emergencyMail, pincode });
 
             if (res.status === 201) {

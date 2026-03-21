@@ -52,7 +52,7 @@ const Emergency = () => {
 
     try {
       const res = await fetch(
-        "http://localhost:5000/api/v1/emergency/emergencypressed",
+        "https://womansafetybackend.onrender.com/api/v1/emergency/emergencypressed",
         {
           method: "POST",
           headers: {

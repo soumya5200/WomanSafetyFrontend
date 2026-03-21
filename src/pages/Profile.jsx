@@ -62,7 +62,7 @@ const Profile = () => {
 
     try {
       const { data } = await axios.put(
-        "http://localhost:5000/api/v1/users/update",
+        "https://womansafetybackend.onrender.com/api/v1/users/update",
         {
          // uid,
           uname,

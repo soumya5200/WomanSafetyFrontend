@@ -203,7 +203,7 @@ const MapSafeSpots = ({ location }) => {
       setLoading(true);
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/v1/safespots/nearby",
+          "https://womansafetybackend.onrender.com/api/v1/safespots/nearby",
           {
             params: {
               lat: activeLocation.lat,
