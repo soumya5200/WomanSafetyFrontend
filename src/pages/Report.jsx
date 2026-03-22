@@ -39,7 +39,7 @@ function Report() {
       formData.append('address', address);
 
       await axios.post(
-        "https://womansafstybackend.onrender.com/api/v1/incidents",
+        "https://womansafetybackend.onrender.com/api/v1/incidents",
         formData,
         {
           headers: {
