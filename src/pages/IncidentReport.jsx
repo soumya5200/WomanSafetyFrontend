@@ -11,7 +11,7 @@ const IncidentReport = () => {
 
     try {
       const { data } = await axios.get(
-        "https://womansafetybackend.onrender.com/api/v1/incidents",
+        "https://womansafstybackend.onrender.com/api/v1/incidents",
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -75,7 +75,7 @@ const IncidentReport = () => {
                     p.images.map((img, i) => (
                       <a
                         key={i}
-                        href={`https://womansafetybackend.onrender.com${img}`}
+                        href={`https://womansafstybackend.onrender.com${img}`}
                         target="_blank"
                         rel="noreferrer"
                         className="btn btn-sm btn-primary mb-1"
@@ -100,7 +100,7 @@ const IncidentReport = () => {
 
                       try {
                         await axios.patch(
-                          `https://womansafetybackend.onrender.com/api/v1/incidents/${p.id}/status`,
+                          `https://womansafstybackend.onrender.com/api/v1/incidents/${p.id}/status`,
                           { status: newStatus },
                           {
                             headers: {

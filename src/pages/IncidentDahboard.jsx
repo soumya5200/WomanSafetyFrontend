@@ -11,7 +11,7 @@ const IncidentDashboard = () => {
 
     try {
       const { data } = await axios.get(
-        "https://womansafetybackend.onrender.com/api/v1/incidents",
+        "https://womansafstybackend.onrender.com/api/v1/incidents",
         {
           headers: { Authorization: "Bearer " + token },
         }

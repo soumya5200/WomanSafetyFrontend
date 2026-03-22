@@ -34,7 +34,7 @@ const Login = () => {
             return false;
         }
         try {
-            const res = await axios.post('https://womansafetybackend.onrender.com/api/v1/users/login', {
+            const res = await axios.post('https://womansafstybackend.onrender.com/api/v1/users/login', {
                 email, password
             });
 
