@@ -85,51 +85,58 @@
 /* ================= TABLET ================= */
 
 @media (max-width: 991px) {
-
   .banner_wrapper {
-    padding: 80px 0;
+    padding: 60px 0;
     text-align: center;
   }
 
   .banner_wrapper .row {
-    flex-direction: column;
+    flex-direction: column-reverse; /* Image upar aur text niche proper alignment ke liye */
   }
 
   .banner_wrapper .banner-title {
-    font-size: 36px;
-  }
-
-  .banner_wrapper .learn-more-btn-section {
-    justify-content: center;
-  }
-
-  .banner_wrapper .header-img-section img {
-    max-width: 500px;
-    top: 30px;
-    left: -80px;
-    position: relative;
-    height:auto ;
-  }
-}
-
-/* ================= MOBILE ================= */
-
-@media (max-width: 576px) {
-
-  .banner_wrapper {
-    padding: 60px 0;
-  }
-
-  .banner_wrapper .banner-title {
-    font-size: 28px;
+    font-size: 32px;
+    line-height: 1.3;
+    margin-top: 20px;
   }
 
   .banner_wrapper .banner-subtitle {
     font-size: 18px;
   }
 
+  .banner_wrapper .learn-more-btn-section {
+    justify-content: center;
+  }
+
+  .banner_wrapper .header-img-section {
+    margin-top: 10px;
+  }
+
   .banner_wrapper .header-img-section img {
-    max-width: 85%;
+    max-width: 280px;
+    margin: 0 auto;
+    position: static;
+  }
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 576px) {
+  .banner_wrapper {
+    padding: 40px 0;
+  }
+
+  .banner_wrapper .banner-title {
+    font-size: 24px;
+  }
+
+  .banner_wrapper .banner-subtitle {
+    font-size: 16px;
+  }
+
+  .banner_wrapper .header-img-section img {
+    max-width: 230px;
+    position: static;
   }
 }
 
@@ -144,4 +151,4 @@
   .shape-fill {
     display: none;
   }
-}
+}    

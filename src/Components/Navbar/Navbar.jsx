@@ -1,226 +1,237 @@
-import React, { useEffect, useState } from 'react'
-import { BiMenuAltRight } from 'react-icons/bi'
-import logo from '../../images/logooo.png'
-import { Link } from "react-router-dom"
-import toast from 'react-hot-toast'
-import '../../styles/navbar.css'
-import { useAuth } from '../../context/auth'
+import React, { useEffect, useState } from 'react';
+import { BiMenuAltRight } from 'react-icons/bi';
+import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+
+import logo from '../../images/logooo.png';
+import '../../styles/navbar.css';
+import { useAuth } from '../../context/auth';
 
 const Navbar = () => {
-
     const [auth, setAuth] = useAuth();
+    const [color, setColor] = useState(false);
+    const navigate = useNavigate();
 
-    const handleSubmit = () => {
+    const isLoggedIn = Boolean(auth?.user && auth?.token);
+
+    // Navbar scroll effect
+    useEffect(() => {
+        const handleScroll = () => {
+            setColor(window.scrollY >= 90);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        handleScroll();
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    // Close mobile navbar
+    const closeNavbar = () => {
+        const navCollapse = document.getElementById('navbarNav');
+
+        if (navCollapse?.classList.contains('show')) {
+            navCollapse.classList.remove('show');
+        }
+    };
+
+    // All main navbar buttons require login
+    const handleProtectedNavigation = (path) => {
+        closeNavbar();
+
+        if (!isLoggedIn) {
+            navigate('/login', {
+                state: { from: path }
+            });
+            return;
+        }
+
+        navigate(path);
+    };
+
+    // Logout
+    const handleLogout = () => {
+        localStorage.removeItem('auth');
+
         setAuth({
             ...auth,
             user: null,
             token: ''
-        })
-        localStorage.removeItem('auth')
-        toast.success('Logged Out Successfully')
-    }
-
-    const [color, setcolor] = useState(false)
-
-    const changeColor = () => {
-        if (window.scrollY >= 90) {
-            setcolor(true)
-        } else {
-            setcolor(false)
-        }
-    }
-
-    window.addEventListener('scroll', changeColor)
-
-    useEffect(() => {
-        const navBar = document.querySelectorAll(".nav-link");
-        const navCollapse = document.querySelector(".navbar-collapse.collapse");
-
-        const handleNavClick = () => {
-            navCollapse.classList.remove("show");
-        };
-
-        navBar.forEach((a) => {
-            a.addEventListener("click", handleNavClick);
         });
 
-        return () => {
-            navBar.forEach((a) => {
-                a.removeEventListener("click", handleNavClick);
-            });
-        };
-    }, []);
+        closeNavbar();
+        toast.success('Logged Out Successfully');
+        navigate('/login', { replace: true });
+    };
+
+    // Reusable navigation link
+    const ProtectedLink = ({
+        to,
+        children,
+        className = 'nav-link'
+    }) => (
+        <a
+            href={to}
+            className={className}
+            onClick={(event) => {
+                event.preventDefault();
+                handleProtectedNavigation(to);
+            }}
+        >
+            {children}
+        </a>
+    );
 
     return (
-        <>
-            {auth?.user?.role ? (
-                <>
-                    <header className='header_wrapper'>
-                        <nav className="navbar navbar-expand-lg fixed-top">
-                            <div className="container-fluid mx-3">
-                                <Link to='/'>
-                                    <img src={logo} style={{ width: '130px' }} />
-                                </Link>
-                                <button className="navbar-toggler pe-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                                    <BiMenuAltRight size={35} />
-                                </button>
+        <header className="header_wrapper">
+            <nav
+                className={`navbar navbar-expand-lg fixed-top ${
+                    color ? 'header-scrolled' : ''
+                }`}
+            >
+                <div className="container-fluid mx-3">
 
-                                <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-                                    <ul className="navbar-nav menu-navbar-nav">
+                    {/* Logo */}
+                    <Link
+                        to={isLoggedIn ? '/' : '/login'}
+                        onClick={closeNavbar}
+                    >
+                        <img
+                            src={logo}
+                            alt="SafeHer Logo"
+                            style={{ width: '130px' }}
+                        />
+                    </Link>
 
-                                        <Link to='/' style={{ textDecoration: 'none' }}>
-                                            <li className="nav-item">
-                                                <a className="nav-link">Home</a>
-                                            </li>
+                    {/* Mobile menu button */}
+                    <button
+                        className="navbar-toggler pe-0"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav"
+                        aria-controls="navbarNav"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                        <BiMenuAltRight size={35} />
+                    </button>
+
+                    <div
+                        className="collapse navbar-collapse justify-content-end"
+                        id="navbarNav"
+                    >
+
+                        {/* All seven buttons remain visible */}
+                        <ul className="navbar-nav menu-navbar-nav">
+
+                            <li className="nav-item">
+                                <ProtectedLink
+                                    to="/emergency"
+                                    className="nav-link learn-more-btn-logout"
+                                >
+                                    Emergency
+                                </ProtectedLink>
+                            </li>
+
+                            <li className="nav-item">
+                                <ProtectedLink to="/">
+                                    Home
+                                </ProtectedLink>
+                            </li>
+
+                            <li className="nav-item">
+                                <ProtectedLink to="/about">
+                                    About Us
+                                </ProtectedLink>
+                            </li>
+
+                            <li className="nav-item">
+                                <ProtectedLink to="/contact">
+                                    Contact Us
+                                </ProtectedLink>
+                            </li>
+
+                            <li className="nav-item">
+                                <ProtectedLink to="/report">
+                                    Report Incident
+                                </ProtectedLink>
+                            </li>
+
+                            <li className="nav-item">
+                                <ProtectedLink to="/trip">
+                                    Trip Safety
+                                </ProtectedLink>
+                            </li>
+
+                            <li className="nav-item">
+                                <ProtectedLink to="/safe-spots">
+                                    Safe Spots
+                                </ProtectedLink>
+                            </li>
+
+                        </ul>
+
+                        {/* Login/Register or Profile/Logout */}
+                        <ul className="navbar-nav mt-2 text-center">
+
+                            {!isLoggedIn ? (
+                                <>
+                                    <li className="nav-item">
+                                        <Link
+                                            to="/login"
+                                            className="nav-link learn-more-btn btn-extra-header"
+                                            onClick={closeNavbar}
+                                        >
+                                            Login
                                         </Link>
+                                    </li>
 
-                                        <Link to='/about' style={{ textDecoration: 'none' }}>
-                                            <li className="nav-item">
-                                                <a className="nav-link">About Us</a>
-                                            </li>
+                                    <li className="nav-item">
+                                        <Link
+                                            to="/register"
+                                            className="nav-link learn-more-btn"
+                                            onClick={closeNavbar}
+                                        >
+                                            Register
                                         </Link>
-
-                                        <Link to='/contact' style={{ textDecoration: 'none' }}>
-                                            <li className="nav-item">
-                                                <a className="nav-link">Contact Us</a>
-                                            </li>
+                                    </li>
+                                </>
+                            ) : (
+                                <>
+                                    <li className="nav-item">
+                                        <Link
+                                            to={
+                                                auth?.user?.role === 1
+                                                    ? '/dashboard/'
+                                                    : '/dashboard/profile'
+                                            }
+                                            className="nav-link learn-more-btn"
+                                            onClick={closeNavbar}
+                                        >
+                                            Profile
                                         </Link>
+                                    </li>
 
-                                        <li className="nav-item">
-                                            <Link className="nav-link" to="/trip">
-                                                🚗 Trip Safety
-                                            </Link>
-                                        </li>
+                                    <li className="nav-item">
+                                        <button
+                                            type="button"
+                                            className="nav-link learn-more-btn-logout"
+                                            onClick={handleLogout}
+                                        >
+                                            Logout
+                                        </button>
+                                    </li>
+                                </>
+                            )}
 
-                                    </ul>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    );
+};
 
-                                    {!auth.user ? (
-                                        <ul className='mt-2 text-center'>
-                                            <Link to='/login' className="nav-item text-center">
-                                                <a className="nav-link learn-more-btn btn-extra-header">Login</a>
-                                            </Link>
-                                            <Link to='/register' className="nav-item text-center">
-                                                <a className="nav-link learn-more-btn">Register</a>
-                                            </Link>
-                                        </ul>
-                                    ) : (
-                                        <ul className='mt-2 text-center'>
-                                            <Link to={`/dashboard${auth?.user?.role === 1 ? "/" : "/profile"}`} className="nav-item text-center">
-                                                <a className="nav-link learn-more-btn">Dashboard</a>
-                                            </Link>
-
-                                            {/* --------------------------
-                                            <Link to="/incident-dashboard" className="nav-item text-center">
-                                                <a className="nav-link learn-more-btn">My Incidents</a>
-                                            </Link>
-                                            --------------------------- */}
-
-                                            <Link onClick={handleSubmit} to='/login' className="nav-item text-center">
-                                                <a className="nav-link learn-more-btn-logout">Logout</a>
-                                            </Link>
-                                        </ul>
-                                    )}
-                                </div>
-                            </div>
-                        </nav>
-                    </header>
-                </>
-            ) : (
-                <>
-                    <header className='header_wrapper'>
-                        <nav className="navbar navbar-expand-lg fixed-top">
-                            <div className="container-fluid mx-3">
-                                <Link to='/'>
-                                    <img src={logo} style={{ width: '130px' }} />
-                                </Link>
-
-                                <button className="navbar-toggler pe-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                                    <BiMenuAltRight size={35} />
-                                </button>
-
-                                <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-                                    <ul className="navbar-nav menu-navbar-nav">
-
-                                        <Link to='/emergency' className="nav-item text-center">
-                                            <a className="nav-link learn-more-btn-logout">Emergency</a>
-                                        </Link>
-
-                                        <Link to='/' style={{ textDecoration: 'none' }}>
-                                            <li className="nav-item">
-                                                <a className="nav-link">Home</a>
-                                            </li>
-                                        </Link>
-
-                                        <Link to='/about' style={{ textDecoration: 'none' }}>
-                                            <li className="nav-item">
-                                                <a className="nav-link">About Us</a>
-                                            </li>
-                                        </Link>
-
-                                        <Link to='/contact' style={{ textDecoration: 'none' }}>
-                                            <li className="nav-item">
-                                                <a className="nav-link">Contact Us</a>
-                                            </li>
-                                        </Link>
-
-                                        {/* Report Incident */}
-                                        <Link to='/report' style={{ textDecoration: 'none' }}>
-                                            <li className="nav-item">
-                                                <a className="nav-link">Report Incident</a>
-                                            </li>
-                                        </Link>
-
-                                        {/* --------------------------
-                                        {auth?.user && (
-                                            <Link to="/incident-dashboard" style={{ textDecoration: 'none' }}>
-                                                <li className="nav-item">
-                                                    <a className="nav-link">My Incidents</a>
-                                                </li>
-                                            </Link>
-                                        )}
-                                        --------------------------- */}
-
-                                        <li className="nav-item">
-                                            <Link className="nav-link" to="/trip">
-                                                Trip Safety
-                                            </Link>
-                                        </li>
-                                        <li className="nav-item">
-                                            <Link className="nav-link" to="/safe-spots">
-                                                 Safe Spots
-                                            </Link>
-                                        </li>
-
-                                    </ul>
-
-                                    {!auth.user ? (
-                                        <ul className='mt-2 text-center'>
-                                            <Link to='/login' className="nav-item text-center">
-                                                <a className="nav-link learn-more-btn btn-extra-header">Login</a>
-                                            </Link>
-                                            <Link to='/register' className="nav-item text-center">
-                                                <a className="nav-link learn-more-btn">Register</a>
-                                            </Link>
-                                        </ul>
-                                    ) : (
-                                        <ul className='mt-2 text-center'>
-                                            <Link to={`/dashboard/${auth?.user?.role === 1 ? "/" : "profile"}`} className="nav-item text-center">
-                                                <a className="nav-link learn-more-btn">Profile</a>
-                                            </Link>
-
-                                            <Link onClick={handleSubmit} to='/login' className="nav-item text-center">
-                                                <a className="nav-link learn-more-btn-logout">Logout</a>
-                                            </Link>
-                                        </ul>
-                                    )}
-                                </div>
-                            </div>
-                        </nav>
-                    </header>
-                </>
-            )}
-        </>
-    )
-}
-
-export default Navbar
+export default Navbar;
